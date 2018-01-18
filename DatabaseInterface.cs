@@ -15,6 +15,49 @@ namespace aluminiDictionary
             _connection = new SqliteConnection(_connectionString);
         }
 
+        public int Insert(string command)
+        {
+            int insertedItemId = 0;
+
+            using (_connection)
+            {
+                _connection.Open ();
+                SqliteCommand dbcmd = _connection.CreateCommand ();
+                dbcmd.CommandText = command;
+
+                dbcmd.ExecuteNonQuery ();
+
+                this.Query("select last_insert_rowid()",
+                    (SqliteDataReader reader) => {
+                        while (reader.Read ())
+                        {
+                            insertedItemId = reader.GetInt32(0);
+                        }
+                    }
+                );
+
+                dbcmd.Dispose ();
+            }
+
+            return insertedItemId;
+        }
+
+        public void Query(string command, Action<SqliteDataReader> handler)
+        {
+            using (_connection)
+            {
+                _connection.Open ();
+                SqliteCommand dbcmd = _connection.CreateCommand ();
+                dbcmd.CommandText = command;
+
+                using (SqliteDataReader dataReader = dbcmd.ExecuteReader())
+                {
+                    handler (dataReader);
+                }
+
+                dbcmd.Dispose ();
+            }
+        }
 
         public void CheckCohortTable ()
         {
@@ -55,7 +98,7 @@ namespace aluminiDictionary
                     }
                 }
                 _connection.Close();
-            } 
+            }
         }
 
         public void CheckCohortInstructorJoinTable ()
@@ -99,7 +142,7 @@ namespace aluminiDictionary
                     }
                 }
                 _connection.Close();
-            } 
+            }
         }
 
         public void CheckInstructorsTable ()
@@ -139,8 +182,8 @@ namespace aluminiDictionary
                     }
                 }
                 _connection.Close();
-            } 
-        }   
+            }
+        }
         public void CheckStudentsTable ()
         {
             using (_connection)
@@ -180,7 +223,7 @@ namespace aluminiDictionary
                     }
                 }
                 _connection.Close();
-            } 
-        } 
+            }
+        }
     }
 }
