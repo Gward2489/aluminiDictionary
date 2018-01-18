@@ -1,0 +1,6 @@
+bin
+obj
+*.sqlite3
+.vscode
+.DS_Store
+dbRouter.cs
