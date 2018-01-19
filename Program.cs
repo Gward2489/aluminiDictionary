@@ -139,7 +139,20 @@ namespace aluminiDictionary
                         
                         List<string> instructors = cohort.getInstructors(displayCohortId);
 
-                        Console.WriteLine($"{displayMeetTime}Cohort {displayCohortNumber}");
+                        Console.WriteLine($"{displayMeetTime}Cohort {displayCohortNumber} learned {cohortLanguage}");
+                        Console.WriteLine("The students were:");
+                        foreach (string student in students)
+                        {
+                            Console.WriteLine($"{student}");
+                        }
+                        Console.WriteLine($"The Instructors were:");
+                        foreach (string instruct in instructors )
+                        {
+                            Console.WriteLine($"{instruct}");
+                        }
+                        Console.WriteLine("enter any key to search again");
+                        Console.ReadLine();
+
                         break;
                 }
             } while (choice !=6);
