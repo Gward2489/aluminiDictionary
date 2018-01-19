@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace aluminiDictionary
 {
@@ -27,6 +28,10 @@ namespace aluminiDictionary
             db.CheckStudentsTable();
             db.CheckInstructorsTable();
             db.CheckCohortInstructorJoinTable();
+
+            Cohort cohort = new Cohort();
+            Instructor instructor = new Instructor();
+            
 
             // create an empty int variable to hold the value returned
             // from MainMenu.Show() This value will reflect the users menu choice.
@@ -73,9 +78,8 @@ namespace aluminiDictionary
                         Console.WriteLine("Cohort Number?");
                         int StudentCohort = Convert.ToInt32(Console.ReadLine());
 
-                        Student student = new Student();
 
-                        int cohortId = student.getStudentsCohortId(dayOrNight, StudentCohort);
+                        int cohortId = cohort.getCohortId(dayOrNight, StudentCohort);
 
 
                         db.Insert($@"
@@ -84,6 +88,58 @@ namespace aluminiDictionary
                             VALUES
                             (null, '{StudentName}','{cohortId}')
                         ");
+                        break;
+                        // create a new instructor and insert it to the database
+                    case 3:
+                         //capture data needed to create a new cohort field in the db
+                        Console.WriteLine("Enter Instructor Full Name");
+                        string InstructorName = Console.ReadLine();
+
+
+                        //insert new Instructor to db by passing in corresponding 
+                        // SQL lite syntax to the insert method.
+                        db.Insert($@"
+                            INSERT INTO Instructors
+                            (Id, Name)
+                            VALUES
+                            (null, '{InstructorName}')
+                        ");
+                        break;
+                        // Create a Join table to represent the relationship between
+                        // an instructor and the cohort they taught.
+                    case 4:
+                        Console.WriteLine("Instructor first and last name:(ex: Steve Brownlee)");
+                        string InstructorToJoin = Console.ReadLine();
+                        Console.WriteLine("Evening or Day Cohort?");
+                        string InstructorMeetTime = Console.ReadLine();
+                        Console.WriteLine("Cohort Number?");
+                        int InstructorCohort = Convert.ToInt32(Console.ReadLine());
+
+                        (int, int) cohortInfo = instructor.JoinInfo(InstructorToJoin, InstructorMeetTime, InstructorCohort); 
+
+                        db.Insert($@"
+                            INSERT INTO CohortInstructorJoin
+                            (Id, InstructorId, CohortId)
+                            VALUES
+                            (null, {cohortInfo.Item1}, {cohortInfo.Item2})
+                        ");
+
+                        break;
+                    case 5:
+                        Console.WriteLine("Evening or Day?");
+                        string displayMeetTime = Console.ReadLine();
+                        Console.WriteLine("Cohort Number?"); 
+                        int displayCohortNumber = Convert.ToInt32(Console.ReadLine());
+
+                        int displayCohortId = cohort.getCohortId(displayMeetTime, displayCohortNumber);
+
+                        string cohortLanguage = cohort.getCohortLanguage(displayCohortId);
+
+                        List<string> students = cohort.getStudents(displayCohortId);
+                        
+                        List<string> instructors = cohort.getInstructors(displayCohortId);
+
+                        Console.WriteLine($"{displayMeetTime}Cohort {displayCohortNumber}");
                         break;
                 }
             } while (choice !=6);
