@@ -85,6 +85,27 @@ namespace aluminiDictionary
                             (null, '{StudentName}','{cohortId}')
                         ");
                         break;
+                        // create a new instructor and insert it to the database
+                    case 3:
+                         //capture data needed to create a new cohort field in the db
+                        Console.WriteLine("Enter Instructor Full Name");
+                        string InstructorName = Console.ReadLine();
+
+
+                        //insert new Instructor to db by passing in corresponding 
+                        // SQL lite syntax to the insert method.
+                        db.Insert($@"
+                            INSERT INTO Instructors
+                            (Id, Name)
+                            VALUES
+                            (null, '{InstructorName}')
+                        ");
+                        break;
+                        // Create a Join table to represent the relationship between
+                        // an instructor and the cohort they taught.
+                    case 4:
+
+                        break;
                 }
             } while (choice !=6);
 
